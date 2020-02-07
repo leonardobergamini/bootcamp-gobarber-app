@@ -1,15 +1,14 @@
 const { Router } = require('express');
-const User = require('./app/models/Users');
+const UserController = require('./app/controllers/UserController');
+const SessionController = require('./app/controllers/SessionController');
+const authMiddleware = require('./app/middlewares/auth');
 
 const routes = new Router();
 
-routes.get('/', async (req, res) => {
-    const usuario = await User.create({
-        name: "Leonardo Bergamini",
-        email: "leonardo@leonardo.com.br",
-        password_hash: "leonardo"
-    });
-    return res.json(usuario);
-})
+routes.post('/users', UserController.store);
+routes.post('/session', SessionController.store);
+routes.get('/users', UserController.index);
+routes.put('/users', authMiddleware, UserController.update);
+
 
 module.exports = routes;
