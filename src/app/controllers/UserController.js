@@ -51,18 +51,22 @@ class UserController {
 
         // Caso passe pelas validações, alterar os dados do usuário
 
-        await User.update(req.body, { returning: true, where: { id: userId } })
-                .then((updatedUser) => {
-                    res.json(updatedUser);
-                });
+        // await User.update(req.body, { returning: true, where: { id: userId } })
+        //         .then((updatedUser) => {
+        //             res.json(updatedUser);
+        //         });
+
+        const { name, provider } = await user.update(req.body);
             
         //console.log(userAlterado);
-        // let obj = {
-        //     id,
-        //     name,
-        //     email,
-        //     provider
-        // }
+        let obj = {
+            id: userId,
+            name,
+            email,
+            provider
+        }
+
+        return res.json(obj);
 
     }
 }
