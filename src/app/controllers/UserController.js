@@ -1,7 +1,19 @@
+const Yup = require('yup');
+
 const User = require('../models/Users');
 
 class UserController {
     async store(req, res) {
+
+        const schema = Yup.object().shape({
+            email: Yup.string().email().required(),
+            name: Yup.string().required(),
+            password: Yup.string().min(6).required(),
+        });
+
+        if(!(await schema.isValid(req.body))) {
+            return res.status(400).json( { error: 'Erro na validação.' } );
+        }
 
         const userExists = await User.findOne( { where : { email: req.body.email } } );
 
@@ -27,6 +39,23 @@ class UserController {
     async update(req, res) {
         const userId = req.userId;
 
+        const schema = Yup.object().shape({
+            name: Yup.string(),
+            email: Yup.string().email(),
+            oldPassword: Yup.string().min(6),
+            password: Yup.string().min(6).when('oldPassword', (oldPassword, field) => 
+                oldPassword ? field.required() : field
+            ),
+            confirmPassword: Yup.string().when('password', (password, field) =>
+                // oneOf(): copia o campo (referência)
+                password ? field.required().oneOf([Yup.ref('password')]) : field    
+            )
+        })
+
+        if(!(await schema.isValid(req.body))) {
+            return res.status(400).json( { error: 'Erro na validação.' } );
+        }
+
         // Verificar se o usuário passou um novo email e
         // se ele é diferente do cadastrado
 
@@ -51,14 +80,8 @@ class UserController {
 
         // Caso passe pelas validações, alterar os dados do usuário
 
-        // await User.update(req.body, { returning: true, where: { id: userId } })
-        //         .then((updatedUser) => {
-        //             res.json(updatedUser);
-        //         });
-
         const { name, provider } = await user.update(req.body);
             
-        //console.log(userAlterado);
         let obj = {
             id: userId,
             name,

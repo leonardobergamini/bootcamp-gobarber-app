@@ -1,10 +1,21 @@
 const jwt = require('jsonwebtoken');
+const Yup = require('Yup');
 
 const User = require('../models/Users');
 const configs = require('../../config/auth');
 
 class SessionController {
     async store(req, res) {
+
+        const schema = Yup.object().shape({
+            email: Yup.string().email().required(),
+            password: Yup.string().required()
+        });
+
+        if(!(await schema.isValid(req.body))) {
+            return res.status(400).json( { error: 'E-mail e senha obrigatórios.' } );
+        }
+
         const { email, password } = req.body;
 
         const user = await User.findOne( { where: { email } } );
