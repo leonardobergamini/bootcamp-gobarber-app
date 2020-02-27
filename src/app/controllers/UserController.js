@@ -1,6 +1,6 @@
 const Yup = require('yup');
 
-const User = require('../models/Users');
+const User = require('../models/User');
 
 class UserController {
     async store(req, res) {
