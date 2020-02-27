@@ -6,18 +6,35 @@ const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
 const FileController = require('./app/controllers/FileController');
 const ProviderController = require('./app/controllers/ProviderController');
+const AppointmentController = require('./app/controllers/AppointmentController');
 
 const authMiddleware = require('./app/middlewares/auth');
 
 const routes = new Router();
 const upload = multer(multerConfigs);
 
+/**
+ * Rotas de User
+ */
 routes.post('/users', UserController.store);
-routes.post('/session', SessionController.store);
 routes.get('/users', UserController.index);
-routes.get('/providers', ProviderController.index);
 routes.put('/users', authMiddleware, UserController.update);
-routes.post('/file', upload.single('file'), FileController.store);
+routes.get('/providers', authMiddleware, ProviderController.index);
+
+/**
+ * Rotas para sessão do usuário
+ */
+routes.post('/session', SessionController.store);
+
+/**
+ * Rotas para envio de arquivos
+ */
+routes.post('/file', authMiddleware, upload.single('file'), FileController.store);
+
+/**
+ * Rotas para agendamento
+ */
+routes.post('/appointments', authMiddleware, AppointmentController.store)
 
 
 module.exports = routes;
