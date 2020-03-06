@@ -29,12 +29,16 @@ routes.post('/session', SessionController.store);
 /**
  * Rotas para envio de arquivos
  */
-routes.post('/file', authMiddleware, upload.single('file'), FileController.store);
+routes.post(
+  '/file',
+  authMiddleware,
+  upload.single('file'),
+  FileController.store
+);
 
 /**
  * Rotas para agendamento
  */
-routes.post('/appointments', authMiddleware, AppointmentController.store)
-
+routes.post('/appointments', authMiddleware, AppointmentController.store);
 
 module.exports = routes;
