@@ -1,22 +1,25 @@
 const { Model, Sequelize } = require('sequelize');
 
 class File extends Model {
-    static init(sequelize){
-        super.init({
-            name: Sequelize.STRING,
-            path: Sequelize.STRING,
-            url: {
-                type: Sequelize.VIRTUAL,
-                get() {
-                    return `http://localhost:3333/file/${this.path}`;
-                }
-            }
-        }, {
-            sequelize
-        });
+  static init(sequelize) {
+    super.init(
+      {
+        name: Sequelize.STRING,
+        path: Sequelize.STRING,
+        url: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return `http://localhost:3333/file/${this.path}`;
+          },
+        },
+      },
+      {
+        sequelize,
+      }
+    );
 
-        return this;
-    }
+    return this;
+  }
 }
 
 module.exports = File;

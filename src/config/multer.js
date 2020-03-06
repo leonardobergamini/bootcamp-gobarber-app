@@ -1,19 +1,16 @@
 const multer = require('multer');
 const crypto = require('crypto');
-const {extname, resolve} = require('path');
+const { extname, resolve } = require('path');
 
 module.exports = {
-    storage: multer.diskStorage({
-        destination: resolve(__dirname, '..', '..', 'tmp', 'uploads'),
-        filename: (req, file, callback) => {
-            crypto.randomBytes(16, (err, res) => {
-                if(err) return callback(err);
+  storage: multer.diskStorage({
+    destination: resolve(__dirname, '..', '..', 'tmp', 'uploads'),
+    filename: (req, file, callback) => {
+      crypto.randomBytes(16, (err, res) => {
+        if (err) return callback(err);
 
-                return callback(
-                    null, 
-                    res.toString('hex') + extname(file.originalname)
-                );
-            });
-        }
-    })
-}
+        return callback(null, res.toString('hex') + extname(file.originalname));
+      });
+    },
+  }),
+};
