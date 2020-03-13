@@ -40,5 +40,6 @@ routes.post(
  * Rotas para agendamento
  */
 routes.post('/appointments', authMiddleware, AppointmentController.store);
+routes.get('/appointments', authMiddleware, AppointmentController.index);
 
 module.exports = routes;
