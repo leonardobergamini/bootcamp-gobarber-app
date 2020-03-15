@@ -1,9 +1,11 @@
 const Yup = require('yup');
-const { startOfHour, isBefore, parseISO } = require('date-fns');
+const { startOfHour, isBefore, parseISO, format } = require('date-fns');
+const ptBr = require('date-fns/locale/pt');
 
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const File = require('../models/File');
+const Notification = require('../schemas/Notification');
 
 class AppointmentController {
   async index(req, res) {
@@ -62,6 +64,13 @@ class AppointmentController {
       });
     }
 
+    if (provider_id === req.userId) {
+      return res.status(401).json({
+        error:
+          'Provedor e usuário logado são os mesmos. Não é possível fazer esse agendamento.',
+      });
+    }
+
     /**
      * Checar se data é superior a data de hoje
      */
@@ -97,6 +106,19 @@ class AppointmentController {
       user_id: req.userId,
       date,
       provider_id,
+    });
+
+    /**
+     * Notificar agendamento para o provider
+     */
+    const user = await User.findByPk(req.userId);
+    const dataFormatada = format(userDate, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+      locale: ptBr,
+    });
+
+    await Notification.create({
+      content: `Novo agendamento de ${user.name} para o ${dataFormatada}`,
+      user: provider_id,
     });
 
     return res.json(appointment);
