@@ -43,6 +43,11 @@ routes.post(
  */
 routes.post('/appointments', authMiddleware, AppointmentController.store);
 routes.get('/appointments', authMiddleware, AppointmentController.index);
+routes.delete(
+  '/appointments/:id',
+  authMiddleware,
+  AppointmentController.delete
+);
 
 /**
  * Rotas para listagem de agendamentos para os provedores de serviços
@@ -50,8 +55,9 @@ routes.get('/appointments', authMiddleware, AppointmentController.index);
 routes.get('/schedules', authMiddleware, ScheduleController.index);
 
 /**
- * Rota para listagem das notificações para os providers
+ * Rotas das notificações para os providers
  */
 routes.get('/notifications', authMiddleware, NotificationController.index);
+routes.put('/notifications/:id', authMiddleware, NotificationController.update);
 
 module.exports = routes;
