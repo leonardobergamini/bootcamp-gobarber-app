@@ -8,6 +8,7 @@ const FileController = require('./app/controllers/FileController');
 const ProviderController = require('./app/controllers/ProviderController');
 const AppointmentController = require('./app/controllers/AppointmentController');
 const ScheduleController = require('./app/controllers/ScheduleController');
+const NotificationController = require('./app/controllers/NotificationController');
 
 const authMiddleware = require('./app/middlewares/auth');
 
@@ -47,5 +48,10 @@ routes.get('/appointments', authMiddleware, AppointmentController.index);
  * Rotas para listagem de agendamentos para os provedores de serviços
  */
 routes.get('/schedules', authMiddleware, ScheduleController.index);
+
+/**
+ * Rota para listagem das notificações para os providers
+ */
+routes.get('/notifications', authMiddleware, NotificationController.index);
 
 module.exports = routes;
