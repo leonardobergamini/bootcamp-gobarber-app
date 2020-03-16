@@ -13,7 +13,8 @@ const User = require('../models/User');
 const File = require('../models/File');
 const Notification = require('../schemas/Notification');
 
-const Mail = require('../../lib/Mail');
+const CancellationMail = require('../jobs/CancellationMail');
+const Queue = require('../../lib/Queue');
 
 class AppointmentController {
   async index(req, res) {
@@ -138,6 +139,12 @@ class AppointmentController {
         {
           model: User,
           as: 'provider',
+          attributes: ['name', 'email'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
         },
       ],
     });
@@ -160,10 +167,8 @@ class AppointmentController {
 
     await appointment.save();
 
-    await Mail.sendMail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento cancelado',
-      text: 'Você tem um novo cancelamento',
+    await Queue.add(CancellationMail.key, {
+      appointment,
     });
 
     return res.json(appointment);
