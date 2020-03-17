@@ -9,6 +9,7 @@ const ProviderController = require('./app/controllers/ProviderController');
 const AppointmentController = require('./app/controllers/AppointmentController');
 const ScheduleController = require('./app/controllers/ScheduleController');
 const NotificationController = require('./app/controllers/NotificationController');
+const AvaiableController = require('./app/controllers/AvaiableController');
 
 const authMiddleware = require('./app/middlewares/auth');
 
@@ -22,6 +23,11 @@ routes.post('/users', UserController.store);
 routes.get('/users', UserController.index);
 routes.put('/users', authMiddleware, UserController.update);
 routes.get('/providers', authMiddleware, ProviderController.index);
+routes.get(
+  '/providers/:providerId/avaiable',
+  authMiddleware,
+  AvaiableController.index
+);
 
 /**
  * Rotas para sessão do usuário
